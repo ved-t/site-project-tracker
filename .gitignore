@@ -27,6 +27,7 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
@@ -43,3 +44,53 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android related
+**/android/**/generated/
+**/android/gen/
+**/android/out/
+**/android/local.properties
+**/android/project.properties
+**/android/proguard-project.txt
+*.keystore
+*.jks
+
+# iOS/macOS related
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.[mh]
+**/macos/Flutter/GeneratedManual.xcconfig
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/generated_main_targets.xcconfig
+**/macos/Runner/GeneratedPluginRegistrant.[mh]
+**/ios/.generated/
+**/ios/Pods/
+**/ios/Podfile.lock
+**/macos/Pods/
+**/macos/Podfile.lock
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Windows related
+**/windows/flutter/ephemeral/
+**/windows/flutter/generated_cache_config.cmake
+**/windows/flutter/generated_config.cmake
+**/windows/flutter/generated_cpp_plugin_registrant.cc
+**/windows/flutter/generated_cpp_plugin_registrant.h
+
+# Linux related
+**/linux/flutter/ephemeral/
+**/linux/flutter/generated_config.cmake
+**/linux/flutter/generated_cpp_plugin_registrant.cc
+**/linux/flutter/generated_cpp_plugin_registrant.h
+
+# Environment variables
+.env
+.env.*
+secret.json
+
+# Tooling
+pubspec-freezed.yaml
+
