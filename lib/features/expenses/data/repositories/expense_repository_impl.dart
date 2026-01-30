@@ -1,0 +1,55 @@
+import '../../domain/entities/expense.dart';
+import '../../domain/repositories/expense_repository.dart';
+import '../datasources/expense_local_ds.dart';
+import '../models/expense_model.dart';
+
+class ExpenseRepositoryImpl implements ExpenseRepository {
+  final ExpenseLocalDataSource local;
+
+  ExpenseRepositoryImpl(this.local);
+
+  @override
+  Future<List<Expense>> getExpenses() async {
+    try {
+      final models = await local.getAll();
+      return models.map((e) => e.toEntity()).toList();
+    } catch (e) {
+      // Handle error or throw
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> addExpense(Expense expense) async {
+    await local.add(ExpenseModel.fromEntity(expense));
+  }
+
+  @override
+  Future<void> updateExpense(Expense expense) async {
+    // LocalDataSource.add handles upsert (put)
+    await local.add(ExpenseModel.fromEntity(expense));
+  }
+
+  @override
+  Future<void> deleteExpense(String id) async {
+    await local.deleteExpenses([id]);
+  }
+
+  @override
+  Future<List<Expense>> getExpensesBySite(String siteId) async {
+    final models = await local.getExpensesBySite(siteId);
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<void> deleteExpensesBySite(String siteId) async {
+    final models = await local.getExpensesBySite(siteId);
+
+    final keysToDelete = models
+        .where((e) => e.siteId == siteId)
+        .map((e) => e.id)
+        .toList();
+
+    await local.deleteExpenses(keysToDelete);
+  }
+}
