@@ -21,13 +21,16 @@ class ProjectHiveModelAdapter extends TypeAdapter<ProjectHiveModel> {
       name: fields[1] as String,
       location: fields[2] as String,
       createdAt: fields[3] as DateTime,
+      updatedAt: fields[4] as DateTime?,
+      deletedAt: fields[5] as DateTime?,
+      deviceId: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProjectHiveModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +38,13 @@ class ProjectHiveModelAdapter extends TypeAdapter<ProjectHiveModel> {
       ..writeByte(2)
       ..write(obj.location)
       ..writeByte(3)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(4)
+      ..write(obj.updatedAt)
+      ..writeByte(5)
+      ..write(obj.deletedAt)
+      ..writeByte(6)
+      ..write(obj.deviceId);
   }
 
   @override

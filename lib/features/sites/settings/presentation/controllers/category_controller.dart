@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:site_project_tracker/core/services/local_storage_service.dart';
+import 'package:site_project_tracker/core/services/sync_providers.dart';
+import 'package:site_project_tracker/core/services/sync_manager.dart';
+import '../../../../../core/utils/dio_error_handler.dart';
+import '../../../../../core/utils/toast_utils.dart';
+import '../../../../../core/utils/logger.dart';
 import '../../domain/entities/category.dart';
-import '../../data/datasources/category_local_ds.dart';
-import '../../data/repositories/category_repository_impl.dart';
-import '../../domain/repositories/category_repository.dart';
 import '../../domain/usecases/add_category.dart';
 import '../../domain/usecases/delete_category.dart';
 import '../../domain/usecases/get_categories.dart';
 import '../../domain/usecases/update_category.dart';
-
-final categoryLocalDsProvider = Provider((_) => CategoryLocalDataSource());
-
-final categoryRepositoryProvider = Provider<CategoryRepository>(
-  (ref) => CategoryRepositoryImpl(ref.read(categoryLocalDsProvider)),
-);
 
 final getCategoriesProvider = Provider(
   (ref) => GetCategories(ref.read(categoryRepositoryProvider)),
@@ -43,6 +40,8 @@ final categoriesProvider =
         ref.read(addCategoryProvider),
         ref.read(updateCategoryProvider),
         ref.read(deleteCategoryProvider),
+        ref.read(localStorageServiceProvider),
+        ref.read(syncManagerProvider),
         siteId,
       );
     });
@@ -52,6 +51,8 @@ class CategoryController extends StateNotifier<List<ExpenseCategoryEntity>> {
   final AddCategory _addCategory;
   final UpdateCategory _updateCategory;
   final DeleteCategory _deleteCategory;
+  final LocalStorageService _localStorageService;
+  final SyncManager _syncManager;
   final String siteId;
 
   CategoryController(
@@ -59,32 +60,47 @@ class CategoryController extends StateNotifier<List<ExpenseCategoryEntity>> {
     this._addCategory,
     this._updateCategory,
     this._deleteCategory,
+    this._localStorageService,
+    this._syncManager,
     this.siteId,
   ) : super([]) {
     load();
   }
 
   Future<void> load() async {
-    state = await _getCategories(siteId);
-
-    if (state.isEmpty) {
-      await _seedDefaultCategories();
+    try {
       state = await _getCategories(siteId);
+
+      if (state.isEmpty) {
+        await _seedDefaultCategories();
+        state = await _getCategories(siteId);
+      }
+    } catch (e) {
+      AppLogger.error('Failed to load categories', error: e, name: 'CAT_CTRL');
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
     }
   }
 
   Future<void> _seedDefaultCategories() async {
+    final deviceId = await _localStorageService.getDeviceId();
     final defaults = [
-      _createDefault('Labor', Icons.engineering, Colors.orange),
-      _createDefault('Materials', Icons.construction, Colors.blue),
-      _createDefault('Transportation', Icons.local_shipping, Colors.blueGrey),
-      _createDefault('Permits', Icons.receipt_long, Colors.purple),
-      _createDefault('Rentals', Icons.handyman, Colors.teal),
-      _createDefault('Food / Snacks', Icons.fastfood, Colors.red),
+      _createDefault('Labor', Icons.engineering, Colors.orange, deviceId),
+      _createDefault('Materials', Icons.construction, Colors.blue, deviceId),
+      _createDefault(
+        'Transportation',
+        Icons.local_shipping,
+        Colors.blueGrey,
+        deviceId,
+      ),
+      _createDefault('Permits', Icons.receipt_long, Colors.purple, deviceId),
+      _createDefault('Rentals', Icons.handyman, Colors.teal, deviceId),
+      _createDefault('Food / Snacks', Icons.fastfood, Colors.red, deviceId),
       _createDefault(
         'Miscellaneous',
         Icons.miscellaneous_services,
         Colors.grey,
+        deviceId,
       ),
     ];
 
@@ -97,6 +113,7 @@ class CategoryController extends StateNotifier<List<ExpenseCategoryEntity>> {
     String name,
     IconData icon,
     Color color,
+    String deviceId,
   ) {
     return ExpenseCategoryEntity(
       id: const Uuid().v4(),
@@ -105,21 +122,37 @@ class CategoryController extends StateNotifier<List<ExpenseCategoryEntity>> {
       icon: icon,
       color: color,
       createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      deviceId: deviceId,
     );
   }
 
   Future<void> save(ExpenseCategoryEntity category) async {
-    final exists = state.any((e) => e.id == category.id);
-    if (exists) {
-      await _updateCategory(category);
-    } else {
-      await _addCategory(category);
+    try {
+      final exists = state.any((e) => e.id == category.id);
+      if (exists) {
+        await _updateCategory(category);
+      } else {
+        await _addCategory(category);
+      }
+      await load();
+      await _syncManager.sync();
+    } catch (e) {
+      AppLogger.error('Failed to save category', error: e, name: 'CAT_CTRL');
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
     }
-    await load();
   }
 
   Future<void> delete(String id) async {
-    await _deleteCategory(id);
-    await load();
+    try {
+      await _deleteCategory(id);
+      await load();
+      await _syncManager.sync();
+    } catch (e) {
+      AppLogger.error('Failed to delete category', error: e, name: 'CAT_CTRL');
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
+    }
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:site_project_tracker/core/widgets/go_pro_button.dart';
 import 'package:site_project_tracker/features/home/presentation/widgets/ai_quick_input.dart';
+import 'package:site_project_tracker/core/services/sync_providers.dart';
+import 'package:site_project_tracker/features/home/presentation/widgets/app_drawer.dart';
 
 import '../../../expenses/presentation/controllers/expense_controller.dart';
 import '../../../projects/presentation/controllers/project_controller.dart';
@@ -22,6 +24,7 @@ class HomeScreen extends ConsumerWidget {
     final projectController = provider.Provider.of<ProjectController>(context);
 
     return Scaffold(
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text('Expense Tracker'),
         actions: [
@@ -35,10 +38,14 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
+          // Trigger synchronization
+          await ref.read(syncManagerProvider).sync();
+
           await projectController.loadProjects();
           // Read the notifier for the load action
           await ref.read(expenseControllerProvider.notifier).load();
         },
+
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [

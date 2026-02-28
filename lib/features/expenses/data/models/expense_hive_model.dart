@@ -24,13 +24,25 @@ class ExpenseHiveModel extends HiveObject {
   final DateTime date;
 
   @HiveField(6)
-  final String category;
+  final String categoryId;
 
   @HiveField(7)
   final String vendor;
 
   @HiveField(8)
   final String? remarks;
+
+  @HiveField(9)
+  final DateTime? updatedAt;
+
+  @HiveField(10)
+  final DateTime? deletedAt;
+
+  @HiveField(11)
+  final String deviceId;
+
+  @HiveField(12)
+  final bool isPaymentCompleted;
 
   ExpenseHiveModel({
     required this.id,
@@ -39,9 +51,13 @@ class ExpenseHiveModel extends HiveObject {
     required this.amount,
     required this.createdAt,
     required this.date,
-    required this.category,
+    required this.categoryId,
     required this.vendor,
+    this.isPaymentCompleted = false,
     this.remarks,
+    this.updatedAt,
+    this.deletedAt,
+    required this.deviceId,
   });
 
   factory ExpenseHiveModel.fromEntity(Expense expense) => ExpenseHiveModel(
@@ -51,9 +67,13 @@ class ExpenseHiveModel extends HiveObject {
     amount: expense.amount,
     createdAt: expense.createdAt,
     date: expense.date,
-    category: expense.category,
+    categoryId: expense.categoryId,
     vendor: expense.vendor,
+    isPaymentCompleted: expense.isPaymentCompleted,
     remarks: expense.remarks,
+    updatedAt: expense.updatedAt,
+    deletedAt: expense.deletedAt,
+    deviceId: expense.deviceId,
   );
 
   Expense toEntity() => Expense(
@@ -63,8 +83,12 @@ class ExpenseHiveModel extends HiveObject {
     amount: amount,
     createdAt: createdAt,
     date: date,
-    category: category,
+    categoryId: categoryId,
     vendor: vendor,
+    isPaymentCompleted: isPaymentCompleted,
     remarks: remarks,
+    updatedAt: updatedAt ?? createdAt,
+    deletedAt: deletedAt,
+    deviceId: deviceId,
   );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:site_project_tracker/features/home/domain/usecases/parse_expense_with_llm.dart';
+import 'package:site_project_tracker/core/utils/dio_error_handler.dart';
 import 'ai_quick_input_state.dart';
 
 class LLMInputController extends StateNotifier<LLMInputState> {
@@ -7,14 +8,15 @@ class LLMInputController extends StateNotifier<LLMInputState> {
 
   LLMInputController(this.parseExpense) : super(const LLMInputState.initial());
 
-  Future<void> submit(String input) async {
+  Future<void> submit(String input, String deviceId) async {
     state = const LLMInputState.loading();
 
     try {
-      final draft = await parseExpense(input);
+      final draft = await parseExpense(input, deviceId);
       state = LLMInputState.success(draft);
     } catch (e) {
-      state = LLMInputState.error(e.toString());
+      final message = DioErrorHandler.getErrorMessage(e);
+      state = LLMInputState.error(message);
     }
   }
 }

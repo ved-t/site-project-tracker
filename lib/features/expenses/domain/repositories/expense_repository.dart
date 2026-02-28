@@ -9,4 +9,6 @@ abstract class ExpenseRepository {
 
   // Affected by Site Deletion
   Future<void> deleteExpensesBySite(String siteId);
+  Future<List<Expense>> getLocalChanges(DateTime? since);
+  Future<void> applyRemoteChanges(List<Expense> changes);
 }

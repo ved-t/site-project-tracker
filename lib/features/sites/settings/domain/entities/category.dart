@@ -7,6 +7,9 @@ class ExpenseCategoryEntity {
   final IconData icon;
   final Color color;
   final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String deviceId;
 
   ExpenseCategoryEntity({
     required this.id,
@@ -15,5 +18,8 @@ class ExpenseCategoryEntity {
     required this.icon,
     required this.color,
     required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.deviceId,
   });
 }

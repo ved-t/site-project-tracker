@@ -28,4 +28,16 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<void> deleteCategory(String id) async {
     await local.delete(id);
   }
+
+  @override
+  Future<List<ExpenseCategoryEntity>> getLocalChanges(DateTime? since) async {
+    final models = await local.getLocalChanges(since);
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<void> applyRemoteChanges(List<ExpenseCategoryEntity> changes) async {
+    final models = changes.map((e) => CategoryModel.fromEntity(e)).toList();
+    await local.applyRemoteChanges(models);
+  }
 }

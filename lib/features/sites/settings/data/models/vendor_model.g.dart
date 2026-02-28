@@ -14,6 +14,11 @@ _$VendorModelImpl _$$VendorModelImplFromJson(Map<String, dynamic> json) =>
       phone: json['phone'] as String?,
       notes: json['notes'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      deletedAt: json['deletedAt'] == null
+          ? null
+          : DateTime.parse(json['deletedAt'] as String),
+      deviceId: json['device_id'] as String,
     );
 
 Map<String, dynamic> _$$VendorModelImplToJson(_$VendorModelImpl instance) =>
@@ -24,4 +29,7 @@ Map<String, dynamic> _$$VendorModelImplToJson(_$VendorModelImpl instance) =>
       'phone': instance.phone,
       'notes': instance.notes,
       'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'deletedAt': instance.deletedAt?.toIso8601String(),
+      'device_id': instance.deviceId,
     };

@@ -4,6 +4,7 @@ import 'sections/site_details_section.dart';
 import 'sections/math_formulas_section.dart';
 import 'sections/categories_section.dart';
 import 'sections/vendors_section.dart';
+import 'sections/reports_section.dart';
 import '../widgets/site_header.dart';
 
 class SiteSettingsScreen extends StatelessWidget {
@@ -26,6 +27,8 @@ class SiteSettingsScreen extends StatelessWidget {
         CategoriesSection(siteId: siteId),
         const SizedBox(height: 12),
         VendorsSection(siteId: siteId),
+        const SizedBox(height: 12),
+        ReportsSection(siteId: siteId),
       ],
     );
   }

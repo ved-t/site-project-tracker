@@ -1,17 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:site_project_tracker/features/expenses/domain/repositories/expense_repository.dart';
+import 'package:site_project_tracker/core/services/sync_providers.dart';
+import 'package:site_project_tracker/core/services/sync_manager.dart';
+import '../../../../core/utils/dio_error_handler.dart';
+import '../../../../core/utils/toast_utils.dart';
+import '../../../../core/utils/logger.dart';
+
 import '../../domain/entities/expense.dart';
-import '../../data/datasources/expense_local_ds.dart';
-import '../../data/repositories/expense_repository_impl.dart';
 import '../../domain/usecases/add_expense.dart';
 import '../../domain/usecases/delete_expense.dart';
 import '../../domain/usecases/get_expenses.dart';
 import '../../domain/usecases/get_expenses_by_project.dart';
 import '../../domain/usecases/update_expense.dart';
-
-final expenseRepositoryProvider = Provider<ExpenseRepository>(
-  (ref) => ExpenseRepositoryImpl(ExpenseLocalDataSource()),
-);
 
 final getExpensesProvider = Provider(
   (ref) => GetExpenses(ref.read(expenseRepositoryProvider)),
@@ -40,6 +39,7 @@ final expenseControllerProvider =
         ref.read(addExpenseProvider),
         ref.read(updateExpenseProvider),
         ref.read(deleteExpenseProvider),
+        ref.read(syncManagerProvider),
       );
     });
 
@@ -56,12 +56,14 @@ class ExpenseController extends StateNotifier<List<Expense>> {
   final AddExpense _addExpense;
   final UpdateExpense _updateExpense;
   final DeleteExpense _deleteExpense;
+  final SyncManager _syncManager;
 
   ExpenseController(
     this._getExpenses,
     this._addExpense,
     this._updateExpense,
     this._deleteExpense,
+    this._syncManager,
   ) : super([]) {
     load();
   }
@@ -69,21 +71,73 @@ class ExpenseController extends StateNotifier<List<Expense>> {
   List<Expense> get expenses => state;
 
   Future<void> load() async {
-    state = await _getExpenses();
+    try {
+      state = await _getExpenses();
+    } catch (e) {
+      AppLogger.error(
+        'Failed to load expenses',
+        error: e,
+        name: 'EXPENSE_CTRL',
+      );
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
+    }
   }
 
   Future<void> addExpense(Expense expense) async {
-    await _addExpense(expense);
-    await load();
+    try {
+      await _addExpense(expense);
+      await load();
+      // Sync in background
+      _syncManager.sync().then((success) {
+        if (success) {
+          ToastUtils.show('Synced with server');
+        }
+      });
+    } catch (e) {
+      AppLogger.error('Failed to add expense', error: e, name: 'EXPENSE_CTRL');
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
+    }
   }
 
   Future<void> updateExpense(Expense expense) async {
-    await _updateExpense(expense);
-    await load();
+    try {
+      await _updateExpense(expense);
+      await load();
+      _syncManager.sync().then((success) {
+        if (success) {
+          ToastUtils.show('Synced with server');
+        }
+      });
+    } catch (e) {
+      AppLogger.error(
+        'Failed to update expense',
+        error: e,
+        name: 'EXPENSE_CTRL',
+      );
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
+    }
   }
 
   Future<void> deleteExpense(String id) async {
-    await _deleteExpense(id);
-    await load();
+    try {
+      await _deleteExpense(id);
+      await load();
+      _syncManager.sync().then((success) {
+        if (success) {
+          ToastUtils.show('Synced with server');
+        }
+      });
+    } catch (e) {
+      AppLogger.error(
+        'Failed to delete expense',
+        error: e,
+        name: 'EXPENSE_CTRL',
+      );
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
+    }
   }
 }

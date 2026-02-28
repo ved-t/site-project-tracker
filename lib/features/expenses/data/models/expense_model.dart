@@ -1,4 +1,6 @@
+// ignore_for_file: invalid_annotation_target
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../domain/entities/expense.dart';
 
 part 'expense_model.freezed.dart';
@@ -13,10 +15,16 @@ class ExpenseModel with _$ExpenseModel {
     required String title,
     required double amount,
     required DateTime date,
-    required String category,
+    @JsonKey(name: 'category_id') required String categoryId,
     required String vendor,
+    @Default(false)
+    @JsonKey(name: 'is_payment_completed')
+    bool isPaymentCompleted,
     String? remarks,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    DateTime? deletedAt,
+    @JsonKey(name: 'device_id') required String deviceId,
   }) = _ExpenseModel;
 
   factory ExpenseModel.fromJson(Map<String, dynamic> json) =>
@@ -28,10 +36,14 @@ class ExpenseModel with _$ExpenseModel {
     title: e.title,
     amount: e.amount,
     date: e.date,
-    category: e.category,
+    categoryId: e.categoryId,
     vendor: e.vendor,
+    isPaymentCompleted: e.isPaymentCompleted,
     remarks: e.remarks,
     createdAt: e.createdAt,
+    updatedAt: e.updatedAt,
+    deletedAt: e.deletedAt,
+    deviceId: e.deviceId,
   );
 
   Expense toEntity() => Expense(
@@ -40,9 +52,13 @@ class ExpenseModel with _$ExpenseModel {
     title: title,
     amount: amount,
     date: date,
-    category: category,
+    categoryId: categoryId,
     vendor: vendor,
+    isPaymentCompleted: isPaymentCompleted,
     remarks: remarks,
     createdAt: createdAt,
+    updatedAt: updatedAt,
+    deletedAt: deletedAt,
+    deviceId: deviceId,
   );
 }

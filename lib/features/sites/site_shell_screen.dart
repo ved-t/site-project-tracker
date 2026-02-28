@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tabs/site_expenses_tab.dart';
+import 'tabs/expense_recording_tab.dart';
 // import 'tabs/site_phases_tab.dart';
 import 'tabs/site_settings_tab.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class _SiteShellScreenState extends State<SiteShellScreen> {
   int _currentIndex = 0;
 
   late final List<Widget> _tabs = [
+    ExpenseRecordingTab(siteId: widget.siteId),
     SiteExpensesTab(siteId: widget.siteId),
     // SitePhasesTab(siteId: widget.siteId),
     SiteSettingsTab(siteId: widget.siteId),
@@ -67,6 +69,10 @@ class _SiteShellScreenState extends State<SiteShellScreen> {
           setState(() => _currentIndex = index);
         },
         destinations: const [
+          NavigationDestination(
+            icon: Icon(LucideIcons.badgePlus), // or LucideIcons.plusCircle
+            label: 'Expense',
+          ),
           NavigationDestination(icon: Icon(LucideIcons.receipt), label: 'Site'),
           // NavigationDestination(icon: Icon(Icons.account_tree), label: 'Phase'),
           NavigationDestination(

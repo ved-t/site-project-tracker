@@ -14,19 +14,25 @@ class ExpenseRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Look up category to get icon and color
+    // Look up category to get icon and color
     final categories = ref.watch(categoriesProvider(expense.siteId));
     final category = categories.isEmpty
         ? ExpenseCategoryEntity(
             id: 'placeholder',
             siteId: expense.siteId,
-            name: expense.category,
+            name: expense.categoryId, // Fallback name
             icon: Icons.help_outline,
             color: Colors.grey,
             createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            deviceId: 'placeholder',
           )
         : categories.firstWhere(
-            (c) => c.name == expense.category,
-            orElse: () => categories.first,
+            (c) => c.id == expense.categoryId,
+            orElse: () => categories.firstWhere(
+              (c) => c.name == expense.categoryId,
+              orElse: () => categories.first,
+            ),
           );
 
     return Padding(

@@ -26,10 +26,17 @@ mixin _$ExpenseModel {
   String get title => throw _privateConstructorUsedError;
   double get amount => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
-  String get category => throw _privateConstructorUsedError;
+  @JsonKey(name: 'category_id')
+  String get categoryId => throw _privateConstructorUsedError;
   String get vendor => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_payment_completed')
+  bool get isPaymentCompleted => throw _privateConstructorUsedError;
   String? get remarks => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  DateTime? get deletedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'device_id')
+  String get deviceId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,10 +56,14 @@ abstract class $ExpenseModelCopyWith<$Res> {
       String title,
       double amount,
       DateTime date,
-      String category,
+      @JsonKey(name: 'category_id') String categoryId,
       String vendor,
+      @JsonKey(name: 'is_payment_completed') bool isPaymentCompleted,
       String? remarks,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime updatedAt,
+      DateTime? deletedAt,
+      @JsonKey(name: 'device_id') String deviceId});
 }
 
 /// @nodoc
@@ -73,10 +84,14 @@ class _$ExpenseModelCopyWithImpl<$Res, $Val extends ExpenseModel>
     Object? title = null,
     Object? amount = null,
     Object? date = null,
-    Object? category = null,
+    Object? categoryId = null,
     Object? vendor = null,
+    Object? isPaymentCompleted = null,
     Object? remarks = freezed,
     Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? deletedAt = freezed,
+    Object? deviceId = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -99,14 +114,18 @@ class _$ExpenseModelCopyWithImpl<$Res, $Val extends ExpenseModel>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      category: null == category
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
+      categoryId: null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
               as String,
       vendor: null == vendor
           ? _value.vendor
           : vendor // ignore: cast_nullable_to_non_nullable
               as String,
+      isPaymentCompleted: null == isPaymentCompleted
+          ? _value.isPaymentCompleted
+          : isPaymentCompleted // ignore: cast_nullable_to_non_nullable
+              as bool,
       remarks: freezed == remarks
           ? _value.remarks
           : remarks // ignore: cast_nullable_to_non_nullable
@@ -115,6 +134,18 @@ class _$ExpenseModelCopyWithImpl<$Res, $Val extends ExpenseModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -133,10 +164,14 @@ abstract class _$$ExpenseModelImplCopyWith<$Res>
       String title,
       double amount,
       DateTime date,
-      String category,
+      @JsonKey(name: 'category_id') String categoryId,
       String vendor,
+      @JsonKey(name: 'is_payment_completed') bool isPaymentCompleted,
       String? remarks,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime updatedAt,
+      DateTime? deletedAt,
+      @JsonKey(name: 'device_id') String deviceId});
 }
 
 /// @nodoc
@@ -155,10 +190,14 @@ class __$$ExpenseModelImplCopyWithImpl<$Res>
     Object? title = null,
     Object? amount = null,
     Object? date = null,
-    Object? category = null,
+    Object? categoryId = null,
     Object? vendor = null,
+    Object? isPaymentCompleted = null,
     Object? remarks = freezed,
     Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? deletedAt = freezed,
+    Object? deviceId = null,
   }) {
     return _then(_$ExpenseModelImpl(
       id: null == id
@@ -181,14 +220,18 @@ class __$$ExpenseModelImplCopyWithImpl<$Res>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      category: null == category
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
+      categoryId: null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
               as String,
       vendor: null == vendor
           ? _value.vendor
           : vendor // ignore: cast_nullable_to_non_nullable
               as String,
+      isPaymentCompleted: null == isPaymentCompleted
+          ? _value.isPaymentCompleted
+          : isPaymentCompleted // ignore: cast_nullable_to_non_nullable
+              as bool,
       remarks: freezed == remarks
           ? _value.remarks
           : remarks // ignore: cast_nullable_to_non_nullable
@@ -197,6 +240,18 @@ class __$$ExpenseModelImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -210,10 +265,14 @@ class _$ExpenseModelImpl extends _ExpenseModel {
       required this.title,
       required this.amount,
       required this.date,
-      required this.category,
+      @JsonKey(name: 'category_id') required this.categoryId,
       required this.vendor,
+      @JsonKey(name: 'is_payment_completed') this.isPaymentCompleted = false,
       this.remarks,
-      required this.createdAt})
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      @JsonKey(name: 'device_id') required this.deviceId})
       : super._();
 
   factory _$ExpenseModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -231,17 +290,28 @@ class _$ExpenseModelImpl extends _ExpenseModel {
   @override
   final DateTime date;
   @override
-  final String category;
+  @JsonKey(name: 'category_id')
+  final String categoryId;
   @override
   final String vendor;
+  @override
+  @JsonKey(name: 'is_payment_completed')
+  final bool isPaymentCompleted;
   @override
   final String? remarks;
   @override
   final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
+  @override
+  final DateTime? deletedAt;
+  @override
+  @JsonKey(name: 'device_id')
+  final String deviceId;
 
   @override
   String toString() {
-    return 'ExpenseModel(id: $id, siteId: $siteId, title: $title, amount: $amount, date: $date, category: $category, vendor: $vendor, remarks: $remarks, createdAt: $createdAt)';
+    return 'ExpenseModel(id: $id, siteId: $siteId, title: $title, amount: $amount, date: $date, categoryId: $categoryId, vendor: $vendor, isPaymentCompleted: $isPaymentCompleted, remarks: $remarks, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, deviceId: $deviceId)';
   }
 
   @override
@@ -254,18 +324,39 @@ class _$ExpenseModelImpl extends _ExpenseModel {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.date, date) || other.date == date) &&
-            (identical(other.category, category) ||
-                other.category == category) &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
             (identical(other.vendor, vendor) || other.vendor == vendor) &&
+            (identical(other.isPaymentCompleted, isPaymentCompleted) ||
+                other.isPaymentCompleted == isPaymentCompleted) &&
             (identical(other.remarks, remarks) || other.remarks == remarks) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.deletedAt, deletedAt) ||
+                other.deletedAt == deletedAt) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, siteId, title, amount, date,
-      category, vendor, remarks, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      siteId,
+      title,
+      amount,
+      date,
+      categoryId,
+      vendor,
+      isPaymentCompleted,
+      remarks,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      deviceId);
 
   @JsonKey(ignore: true)
   @override
@@ -283,15 +374,20 @@ class _$ExpenseModelImpl extends _ExpenseModel {
 
 abstract class _ExpenseModel extends ExpenseModel {
   const factory _ExpenseModel(
-      {required final String id,
-      @JsonKey(name: 'site_id') required final String siteId,
-      required final String title,
-      required final double amount,
-      required final DateTime date,
-      required final String category,
-      required final String vendor,
-      final String? remarks,
-      required final DateTime createdAt}) = _$ExpenseModelImpl;
+          {required final String id,
+          @JsonKey(name: 'site_id') required final String siteId,
+          required final String title,
+          required final double amount,
+          required final DateTime date,
+          @JsonKey(name: 'category_id') required final String categoryId,
+          required final String vendor,
+          @JsonKey(name: 'is_payment_completed') final bool isPaymentCompleted,
+          final String? remarks,
+          required final DateTime createdAt,
+          required final DateTime updatedAt,
+          final DateTime? deletedAt,
+          @JsonKey(name: 'device_id') required final String deviceId}) =
+      _$ExpenseModelImpl;
   const _ExpenseModel._() : super._();
 
   factory _ExpenseModel.fromJson(Map<String, dynamic> json) =
@@ -309,13 +405,24 @@ abstract class _ExpenseModel extends ExpenseModel {
   @override
   DateTime get date;
   @override
-  String get category;
+  @JsonKey(name: 'category_id')
+  String get categoryId;
   @override
   String get vendor;
+  @override
+  @JsonKey(name: 'is_payment_completed')
+  bool get isPaymentCompleted;
   @override
   String? get remarks;
   @override
   DateTime get createdAt;
+  @override
+  DateTime get updatedAt;
+  @override
+  DateTime? get deletedAt;
+  @override
+  @JsonKey(name: 'device_id')
+  String get deviceId;
   @override
   @JsonKey(ignore: true)
   _$$ExpenseModelImplCopyWith<_$ExpenseModelImpl> get copyWith =>

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:site_project_tracker/core/services/sync_providers.dart';
 import '../../../domain/entities/vendor.dart';
+
 import '../../controllers/vendor_controller.dart';
 import '../../../../../../core/widgets/bouncing_button.dart';
 import '../../../../../../core/widgets/success_checkmark.dart';
@@ -45,6 +47,8 @@ class _AddEditVendorSheetState extends ConsumerState<AddEditVendorSheet> {
 
     setState(() => _isSaving = true);
 
+    final deviceId = await ref.read(localStorageServiceProvider).getDeviceId();
+
     final vendor = Vendor(
       id: widget.vendor?.id ?? const Uuid().v4(),
       siteId: widget.siteId,
@@ -52,6 +56,8 @@ class _AddEditVendorSheetState extends ConsumerState<AddEditVendorSheet> {
       phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       createdAt: widget.vendor?.createdAt ?? DateTime.now(),
+      updatedAt: widget.vendor?.updatedAt ?? DateTime.now(),
+      deviceId: widget.vendor?.deviceId ?? deviceId,
     );
 
     await ref.read(vendorsProvider(widget.siteId).notifier).save(vendor);

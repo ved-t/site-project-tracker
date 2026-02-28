@@ -9,8 +9,8 @@ class LLMExpenseRepositoryImpl implements LLMExpenseRepository {
   LLMExpenseRepositoryImpl(this.parser);
 
   @override
-  Future<LLMExpenseDraft> parseExpense(String input) async {
-    final json = await parser.parseExpense(input);
+  Future<LLMExpenseDraft> parseExpense(String input, String deviceId) async {
+    final json = await parser.parseExpense(input, deviceId);
     final dto = LLMExpenseDto.fromJson(json);
 
     return LLMExpenseDraft(

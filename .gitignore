@@ -94,3 +94,10 @@ secret.json
 # Tooling
 pubspec-freezed.yaml
 
+#Log files
+analysis_options.yaml
+analysis_final_check.txt
+analysis_final_utf8.txt
+analysis_output.txt
+analysis_output_final.txt
+analysis_utf8.txt

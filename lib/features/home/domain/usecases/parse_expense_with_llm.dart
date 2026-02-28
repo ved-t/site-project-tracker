@@ -6,7 +6,7 @@ class ParseExpenseWithAi {
 
   ParseExpenseWithAi(this.repository);
 
-  Future<LLMExpenseDraft> call(String input) {
-    return repository.parseExpense(input);
+  Future<LLMExpenseDraft> call(String input, String deviceId) {
+    return repository.parseExpense(input, deviceId);
   }
 }

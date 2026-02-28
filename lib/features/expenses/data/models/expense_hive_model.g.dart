@@ -23,16 +23,20 @@ class ExpenseHiveModelAdapter extends TypeAdapter<ExpenseHiveModel> {
       amount: fields[3] as double,
       createdAt: fields[4] as DateTime,
       date: fields[5] as DateTime,
-      category: fields[6] as String,
+      categoryId: fields[6] as String,
       vendor: fields[7] as String,
+      isPaymentCompleted: fields[12] as bool,
       remarks: fields[8] as String?,
+      updatedAt: fields[9] as DateTime?,
+      deletedAt: fields[10] as DateTime?,
+      deviceId: fields[11] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ExpenseHiveModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -46,11 +50,19 @@ class ExpenseHiveModelAdapter extends TypeAdapter<ExpenseHiveModel> {
       ..writeByte(5)
       ..write(obj.date)
       ..writeByte(6)
-      ..write(obj.category)
+      ..write(obj.categoryId)
       ..writeByte(7)
       ..write(obj.vendor)
       ..writeByte(8)
-      ..write(obj.remarks);
+      ..write(obj.remarks)
+      ..writeByte(9)
+      ..write(obj.updatedAt)
+      ..writeByte(10)
+      ..write(obj.deletedAt)
+      ..writeByte(11)
+      ..write(obj.deviceId)
+      ..writeByte(12)
+      ..write(obj.isPaymentCompleted);
   }
 
   @override

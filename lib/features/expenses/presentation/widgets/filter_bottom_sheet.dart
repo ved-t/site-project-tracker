@@ -94,11 +94,11 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
           Wrap(
             spacing: 8,
             children: availableCategories.map((category) {
-              final isSelected = _selectedCategories.contains(category.name);
+              final isSelected = _selectedCategories.contains(category.id);
               return FilterChip(
                 label: Text(category.name),
                 selected: isSelected,
-                onSelected: (_) => _toggleCategory(category.name),
+                onSelected: (_) => _toggleCategory(category.id),
                 selectedColor: Theme.of(context).colorScheme.primaryContainer,
                 checkmarkColor: Theme.of(context).colorScheme.primary,
               );

@@ -47,6 +47,10 @@ dependencies:
   math_expressions: ^2.4.0
   speech_to_text: ^7.3.0
   lucide_icons: ^0.257.0
+  firebase_core: ^4.4.0
+  firebase_auth: ^6.1.4
+  google_sign_in: ^6.2.1
+
 
 dev_dependencies:
   flutter_test:

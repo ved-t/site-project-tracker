@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:site_project_tracker/features/expenses/presentation/widgets/calculator_sheet.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:site_project_tracker/core/services/sync_providers.dart';
 import '../../domain/entities/expense.dart';
+import 'package:site_project_tracker/features/home/domain/entities/llm_parsed_expense.dart';
+
 import '../controllers/expense_controller.dart';
 import '../../../sites/settings/presentation/controllers/category_controller.dart';
 import '../../../sites/settings/presentation/controllers/vendor_controller.dart';
@@ -14,7 +17,9 @@ import 'package:lucide_icons/lucide_icons.dart';
 
 class AddExpenseSheet extends ConsumerStatefulWidget {
   final String siteId;
-  const AddExpenseSheet({super.key, required this.siteId});
+  final LLMExpenseDraft? initialDraft;
+
+  const AddExpenseSheet({super.key, required this.siteId, this.initialDraft});
 
   @override
   ConsumerState<AddExpenseSheet> createState() => _AddExpenseSheetState();
@@ -32,6 +37,31 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
   bool _isSubmitting = false;
   bool _isSuccess = false;
   bool _isAmountLocked = false;
+  bool _isPaymentCompleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _prefillFromDraft();
+  }
+
+  void _prefillFromDraft() {
+    if (widget.initialDraft != null) {
+      final draft = widget.initialDraft!;
+      if (draft.title != null) _titleController.text = draft.title!;
+      if (draft.amount != null && draft.amount! > 0) {
+        _amountController.text = draft.amount.toString();
+      }
+      if (draft.vendorId != null) _vendorController.text = draft.vendorId!;
+      // Note: We can only pre-select if it matches one of the loaded categories.
+      // Since categories are loaded in build(), we rely on setState or similar?
+      // Actually, _selectedCategory is just a string key. If it matches, Dropdown shows it.
+      if (draft.categoryId != null) _selectedCategory = draft.categoryId;
+
+      if (draft.remarks != null) _remarksController.text = draft.remarks!;
+      if (draft.date != null) _selectedDate = draft.date!;
+    }
+  }
 
   @override
   void dispose() {
@@ -53,18 +83,23 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
 
     setState(() => _isSubmitting = true);
 
+    final deviceId = await ref.read(localStorageServiceProvider).getDeviceId();
+
     final expense = Expense(
       id: const Uuid().v4(),
       siteId: widget.siteId,
       title: _titleController.text.trim(),
       amount: double.parse(_amountController.text),
       date: _selectedDate,
-      category: _selectedCategory!,
+      categoryId: _selectedCategory!,
       vendor: _vendorController.text.trim(),
+      isPaymentCompleted: _isPaymentCompleted,
       remarks: _remarksController.text.trim().isEmpty
           ? null
           : _remarksController.text.trim(),
       createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      deviceId: deviceId,
     );
 
     await ref.read(expenseControllerProvider.notifier).addExpense(expense);
@@ -78,7 +113,7 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
 
     await Future.delayed(const Duration(milliseconds: 1000));
 
-    if (mounted) Navigator.of(context).pop();
+    if (mounted) Navigator.of(context).pop(true);
   }
 
   Future<void> _pickDate() async {
@@ -238,18 +273,17 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
 
               /// Category Dropdown
               DropdownButtonFormField<String>(
-                value: _selectedCategory,
+                value: categories.any((c) => c.id == _selectedCategory)
+                    ? _selectedCategory
+                    : null,
                 decoration: const InputDecoration(
                   labelText: 'Category',
                   // border: OutlineInputBorder(),
                 ),
                 items: categories.map((cat) {
                   return DropdownMenuItem(
-                    value: cat.name,
+                    value: cat.id,
                     child: Row(
-                      // Note: Category icons are stored as code points, we might need to handle this separately if they were Material Icons code points.
-                      // But assume they are IconData. If they were Material, we might want to map them?
-                      // For now, keep as is unless category icons are also migrated.
                       children: [
                         Icon(cat.icon, size: 20, color: cat.color),
                         const SizedBox(width: 10),
@@ -283,6 +317,22 @@ class _AddExpenseSheetState extends ConsumerState<AddExpenseSheet> {
                 validator: (value) => value == null || value.trim().isEmpty
                     ? 'Vendor is required'
                     : null,
+              ),
+
+              const SizedBox(height: 16),
+
+              /// Payment Completed Checkbox
+              CheckboxListTile(
+                value: _isPaymentCompleted,
+                onChanged: (val) {
+                  setState(() {
+                    _isPaymentCompleted = val ?? false;
+                  });
+                },
+                title: const Text('Is payment completed?'),
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                dense: true,
               ),
 
               const SizedBox(height: 16),

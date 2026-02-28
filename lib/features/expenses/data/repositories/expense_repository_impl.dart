@@ -21,13 +21,12 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
 
   @override
   Future<void> addExpense(Expense expense) async {
-    await local.add(ExpenseModel.fromEntity(expense));
+    await local.saveExpense(ExpenseModel.fromEntity(expense));
   }
 
   @override
   Future<void> updateExpense(Expense expense) async {
-    // LocalDataSource.add handles upsert (put)
-    await local.add(ExpenseModel.fromEntity(expense));
+    await local.saveExpense(ExpenseModel.fromEntity(expense));
   }
 
   @override
@@ -51,5 +50,17 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
         .toList();
 
     await local.deleteExpenses(keysToDelete);
+  }
+
+  @override
+  Future<List<Expense>> getLocalChanges(DateTime? since) async {
+    final models = await local.getLocalChanges(since);
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<void> applyRemoteChanges(List<Expense> changes) async {
+    final models = changes.map((e) => ExpenseModel.fromEntity(e)).toList();
+    await local.applyRemoteChanges(models);
   }
 }

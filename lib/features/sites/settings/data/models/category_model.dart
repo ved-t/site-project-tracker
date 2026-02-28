@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+// ignore_for_file: invalid_annotation_target
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../domain/entities/category.dart';
 
 part 'category_model.freezed.dart';
@@ -15,27 +17,35 @@ class CategoryModel with _$CategoryModel {
     required int iconCodePoint,
     required int colorValue,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    DateTime? deletedAt,
+    @JsonKey(name: 'device_id') required String deviceId,
   }) = _CategoryModel;
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>
       _$CategoryModelFromJson(json);
 
-  factory CategoryModel.fromEntity(ExpenseCategoryEntity c) =>
-      CategoryModel(
-        id: c.id,
-        siteId: c.siteId,
-        name: c.name,
-        iconCodePoint: c.icon.codePoint,
-        colorValue: c.color.value,
-        createdAt: c.createdAt,
-      );
+  factory CategoryModel.fromEntity(ExpenseCategoryEntity c) => CategoryModel(
+    id: c.id,
+    siteId: c.siteId,
+    name: c.name,
+    iconCodePoint: c.icon.codePoint,
+    colorValue: c.color.value,
+    createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
+    deletedAt: c.deletedAt,
+    deviceId: c.deviceId,
+  );
 
   ExpenseCategoryEntity toEntity() => ExpenseCategoryEntity(
-        id: id,
-        siteId: siteId,
-        name: name,
-        icon: IconData(iconCodePoint, fontFamily: 'MaterialIcons'),
-        color: Color(colorValue),
-        createdAt: createdAt,
-      );
+    id: id,
+    siteId: siteId,
+    name: name,
+    icon: IconData(iconCodePoint, fontFamily: 'MaterialIcons'),
+    color: Color(colorValue),
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    deletedAt: deletedAt,
+    deviceId: deviceId,
+  );
 }

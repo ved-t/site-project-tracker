@@ -26,6 +26,10 @@ mixin _$VendorModel {
   String? get phone => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  DateTime? get deletedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'device_id')
+  String get deviceId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +49,10 @@ abstract class $VendorModelCopyWith<$Res> {
       String name,
       String? phone,
       String? notes,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime updatedAt,
+      DateTime? deletedAt,
+      @JsonKey(name: 'device_id') String deviceId});
 }
 
 /// @nodoc
@@ -67,6 +74,9 @@ class _$VendorModelCopyWithImpl<$Res, $Val extends VendorModel>
     Object? phone = freezed,
     Object? notes = freezed,
     Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? deletedAt = freezed,
+    Object? deviceId = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -93,6 +103,18 @@ class _$VendorModelCopyWithImpl<$Res, $Val extends VendorModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -111,7 +133,10 @@ abstract class _$$VendorModelImplCopyWith<$Res>
       String name,
       String? phone,
       String? notes,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime updatedAt,
+      DateTime? deletedAt,
+      @JsonKey(name: 'device_id') String deviceId});
 }
 
 /// @nodoc
@@ -131,6 +156,9 @@ class __$$VendorModelImplCopyWithImpl<$Res>
     Object? phone = freezed,
     Object? notes = freezed,
     Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? deletedAt = freezed,
+    Object? deviceId = null,
   }) {
     return _then(_$VendorModelImpl(
       id: null == id
@@ -157,6 +185,18 @@ class __$$VendorModelImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -170,7 +210,10 @@ class _$VendorModelImpl extends _VendorModel {
       required this.name,
       this.phone,
       this.notes,
-      required this.createdAt})
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      @JsonKey(name: 'device_id') required this.deviceId})
       : super._();
 
   factory _$VendorModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -188,10 +231,17 @@ class _$VendorModelImpl extends _VendorModel {
   final String? notes;
   @override
   final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
+  @override
+  final DateTime? deletedAt;
+  @override
+  @JsonKey(name: 'device_id')
+  final String deviceId;
 
   @override
   String toString() {
-    return 'VendorModel(id: $id, siteId: $siteId, name: $name, phone: $phone, notes: $notes, createdAt: $createdAt)';
+    return 'VendorModel(id: $id, siteId: $siteId, name: $name, phone: $phone, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, deviceId: $deviceId)';
   }
 
   @override
@@ -205,13 +255,19 @@ class _$VendorModelImpl extends _VendorModel {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.notes, notes) || other.notes == notes) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.deletedAt, deletedAt) ||
+                other.deletedAt == deletedAt) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, siteId, name, phone, notes, createdAt);
+  int get hashCode => Object.hash(runtimeType, id, siteId, name, phone, notes,
+      createdAt, updatedAt, deletedAt, deviceId);
 
   @JsonKey(ignore: true)
   @override
@@ -229,12 +285,16 @@ class _$VendorModelImpl extends _VendorModel {
 
 abstract class _VendorModel extends VendorModel {
   const factory _VendorModel(
-      {required final String id,
-      required final String siteId,
-      required final String name,
-      final String? phone,
-      final String? notes,
-      required final DateTime createdAt}) = _$VendorModelImpl;
+          {required final String id,
+          required final String siteId,
+          required final String name,
+          final String? phone,
+          final String? notes,
+          required final DateTime createdAt,
+          required final DateTime updatedAt,
+          final DateTime? deletedAt,
+          @JsonKey(name: 'device_id') required final String deviceId}) =
+      _$VendorModelImpl;
   const _VendorModel._() : super._();
 
   factory _VendorModel.fromJson(Map<String, dynamic> json) =
@@ -252,6 +312,13 @@ abstract class _VendorModel extends VendorModel {
   String? get notes;
   @override
   DateTime get createdAt;
+  @override
+  DateTime get updatedAt;
+  @override
+  DateTime? get deletedAt;
+  @override
+  @JsonKey(name: 'device_id')
+  String get deviceId;
   @override
   @JsonKey(ignore: true)
   _$$VendorModelImplCopyWith<_$VendorModelImpl> get copyWith =>

@@ -46,7 +46,7 @@ final filteredProjectExpensesProvider =
         // Category filter
         if (filter.categories != null &&
             filter.categories!.isNotEmpty &&
-            !filter.categories!.contains(expense.category)) {
+            !filter.categories!.contains(expense.categoryId)) {
           return false;
         }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:site_project_tracker/features/expenses/presentation/widgets/add_expense_sheet.dart';
+import 'package:site_project_tracker/core/utils/logger.dart';
 import 'package:site_project_tracker/features/expenses/presentation/widgets/filter_bottom_sheet.dart';
 import '../controllers/expense_filter_controller.dart';
 import '../widgets/expense_row.dart';
@@ -9,7 +9,6 @@ import '../../../../../core/utils/dialog_utils.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/expense.dart';
 import 'package:site_project_tracker/features/sites/settings/presentation/widgets/site_header.dart';
-import '../../../../../core/widgets/bouncing_button.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class ExpenseListScreen extends ConsumerWidget {
@@ -21,6 +20,11 @@ class ExpenseListScreen extends ConsumerWidget {
     // Watch the FILTERED expenses
     final expensesAsync = ref.watch(filteredProjectExpensesProvider(siteId));
     final filter = ref.watch(expenseFilterProvider);
+
+    AppLogger.debug(
+      'Expenses: ${expensesAsync.value?.toString()}',
+      name: 'EXPENSE_LIST',
+    );
 
     return Scaffold(
       body: Padding(
@@ -198,28 +202,6 @@ class ExpenseListScreen extends ConsumerWidget {
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(child: Text('Error: $error')),
-        ),
-      ),
-
-      /// Floating Action Button
-      floatingActionButton: BouncingButton(
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            showAnimatedDialog(
-              context,
-              Dialog(
-                insetPadding: const EdgeInsets.all(16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: SingleChildScrollView(
-                  child: AddExpenseSheet(siteId: siteId),
-                ),
-              ),
-            );
-          },
-          icon: const Icon(LucideIcons.plus),
-          label: const Text('Add Expense'),
         ),
       ),
     );

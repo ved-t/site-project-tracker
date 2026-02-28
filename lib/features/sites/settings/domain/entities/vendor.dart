@@ -5,6 +5,9 @@ class Vendor {
   final String? phone;
   final String? notes;
   final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String deviceId;
 
   Vendor({
     required this.id,
@@ -13,5 +16,8 @@ class Vendor {
     this.phone,
     this.notes,
     required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.deviceId,
   });
 }

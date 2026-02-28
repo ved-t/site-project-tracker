@@ -1,18 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:site_project_tracker/core/services/sync_providers.dart';
+import 'package:site_project_tracker/core/services/sync_manager.dart';
+
 import '../../domain/entities/vendor.dart';
-import '../../data/datasources/vendor_local_ds.dart';
-import '../../data/repositories/vendor_repository_impl.dart';
-import '../../domain/repositories/vendor_repository.dart';
 import '../../domain/usecases/add_vendor.dart';
 import '../../domain/usecases/delete_vendor.dart';
 import '../../domain/usecases/get_vendors.dart';
 import '../../domain/usecases/update_vendor.dart';
-
-final vendorLocalDsProvider = Provider((_) => VendorLocalDataSource());
-
-final vendorRepositoryProvider = Provider<VendorRepository>(
-  (ref) => VendorRepositoryImpl(ref.read(vendorLocalDsProvider)),
-);
 
 final getVendorsProvider = Provider(
   (ref) => GetVendors(ref.read(vendorRepositoryProvider)),
@@ -40,6 +34,7 @@ final vendorsProvider =
         ref.read(addVendorProvider),
         ref.read(updateVendorProvider),
         ref.read(deleteVendorProvider),
+        ref.read(syncManagerProvider),
         siteId,
       );
     });
@@ -49,6 +44,7 @@ class VendorController extends StateNotifier<List<Vendor>> {
   final AddVendor _addVendor;
   final UpdateVendor _updateVendor;
   final DeleteVendor _deleteVendor;
+  final SyncManager _syncManager;
   final String siteId;
 
   VendorController(
@@ -56,6 +52,7 @@ class VendorController extends StateNotifier<List<Vendor>> {
     this._addVendor,
     this._updateVendor,
     this._deleteVendor,
+    this._syncManager,
     this.siteId,
   ) : super([]) {
     load();
@@ -73,10 +70,12 @@ class VendorController extends StateNotifier<List<Vendor>> {
       await _addVendor(vendor);
     }
     await load();
+    await _syncManager.sync();
   }
 
   Future<void> delete(String id) async {
     await _deleteVendor(id);
     await load();
+    await _syncManager.sync();
   }
 }

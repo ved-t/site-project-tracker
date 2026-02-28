@@ -51,14 +51,19 @@ class _RecentExpenseItem extends ConsumerWidget {
         ? ExpenseCategoryEntity(
             id: 'placeholder',
             siteId: expense.siteId,
-            name: expense.category,
-            icon: Icons.help_outline,
+            name: expense.categoryId,
+            icon: Icons.details,
             color: Colors.grey,
             createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            deviceId: 'placeholder',
           )
         : categories.firstWhere(
-            (c) => c.name == expense.category,
-            orElse: () => categories.first,
+            (c) => c.id == expense.categoryId,
+            orElse: () => categories.firstWhere(
+              (c) => c.name == expense.categoryId,
+              orElse: () => categories.first,
+            ),
           );
 
     return Padding(

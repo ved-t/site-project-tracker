@@ -26,6 +26,10 @@ mixin _$CategoryModel {
   int get iconCodePoint => throw _privateConstructorUsedError;
   int get colorValue => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  DateTime? get deletedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'device_id')
+  String get deviceId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +49,10 @@ abstract class $CategoryModelCopyWith<$Res> {
       String name,
       int iconCodePoint,
       int colorValue,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime updatedAt,
+      DateTime? deletedAt,
+      @JsonKey(name: 'device_id') String deviceId});
 }
 
 /// @nodoc
@@ -67,6 +74,9 @@ class _$CategoryModelCopyWithImpl<$Res, $Val extends CategoryModel>
     Object? iconCodePoint = null,
     Object? colorValue = null,
     Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? deletedAt = freezed,
+    Object? deviceId = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -93,6 +103,18 @@ class _$CategoryModelCopyWithImpl<$Res, $Val extends CategoryModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -111,7 +133,10 @@ abstract class _$$CategoryModelImplCopyWith<$Res>
       String name,
       int iconCodePoint,
       int colorValue,
-      DateTime createdAt});
+      DateTime createdAt,
+      DateTime updatedAt,
+      DateTime? deletedAt,
+      @JsonKey(name: 'device_id') String deviceId});
 }
 
 /// @nodoc
@@ -131,6 +156,9 @@ class __$$CategoryModelImplCopyWithImpl<$Res>
     Object? iconCodePoint = null,
     Object? colorValue = null,
     Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? deletedAt = freezed,
+    Object? deviceId = null,
   }) {
     return _then(_$CategoryModelImpl(
       id: null == id
@@ -157,6 +185,18 @@ class __$$CategoryModelImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -170,7 +210,10 @@ class _$CategoryModelImpl extends _CategoryModel {
       required this.name,
       required this.iconCodePoint,
       required this.colorValue,
-      required this.createdAt})
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      @JsonKey(name: 'device_id') required this.deviceId})
       : super._();
 
   factory _$CategoryModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -188,10 +231,17 @@ class _$CategoryModelImpl extends _CategoryModel {
   final int colorValue;
   @override
   final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
+  @override
+  final DateTime? deletedAt;
+  @override
+  @JsonKey(name: 'device_id')
+  final String deviceId;
 
   @override
   String toString() {
-    return 'CategoryModel(id: $id, siteId: $siteId, name: $name, iconCodePoint: $iconCodePoint, colorValue: $colorValue, createdAt: $createdAt)';
+    return 'CategoryModel(id: $id, siteId: $siteId, name: $name, iconCodePoint: $iconCodePoint, colorValue: $colorValue, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, deviceId: $deviceId)';
   }
 
   @override
@@ -207,13 +257,19 @@ class _$CategoryModelImpl extends _CategoryModel {
             (identical(other.colorValue, colorValue) ||
                 other.colorValue == colorValue) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.deletedAt, deletedAt) ||
+                other.deletedAt == deletedAt) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, siteId, name, iconCodePoint, colorValue, createdAt);
+  int get hashCode => Object.hash(runtimeType, id, siteId, name, iconCodePoint,
+      colorValue, createdAt, updatedAt, deletedAt, deviceId);
 
   @JsonKey(ignore: true)
   @override
@@ -231,12 +287,16 @@ class _$CategoryModelImpl extends _CategoryModel {
 
 abstract class _CategoryModel extends CategoryModel {
   const factory _CategoryModel(
-      {required final String id,
-      required final String siteId,
-      required final String name,
-      required final int iconCodePoint,
-      required final int colorValue,
-      required final DateTime createdAt}) = _$CategoryModelImpl;
+          {required final String id,
+          required final String siteId,
+          required final String name,
+          required final int iconCodePoint,
+          required final int colorValue,
+          required final DateTime createdAt,
+          required final DateTime updatedAt,
+          final DateTime? deletedAt,
+          @JsonKey(name: 'device_id') required final String deviceId}) =
+      _$CategoryModelImpl;
   const _CategoryModel._() : super._();
 
   factory _CategoryModel.fromJson(Map<String, dynamic> json) =
@@ -254,6 +314,13 @@ abstract class _CategoryModel extends CategoryModel {
   int get colorValue;
   @override
   DateTime get createdAt;
+  @override
+  DateTime get updatedAt;
+  @override
+  DateTime? get deletedAt;
+  @override
+  @JsonKey(name: 'device_id')
+  String get deviceId;
   @override
   @JsonKey(ignore: true)
   _$$CategoryModelImplCopyWith<_$CategoryModelImpl> get copyWith =>

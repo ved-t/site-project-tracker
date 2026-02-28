@@ -28,4 +28,16 @@ class VendorRepositoryImpl implements VendorRepository {
   Future<void> deleteVendor(String id) async {
     await local.delete(id);
   }
+
+  @override
+  Future<List<Vendor>> getLocalChanges(DateTime? since) async {
+    final models = await local.getLocalChanges(since);
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<void> applyRemoteChanges(List<Vendor> changes) async {
+    final models = changes.map((e) => VendorModel.fromEntity(e)).toList();
+    await local.applyRemoteChanges(models);
+  }
 }

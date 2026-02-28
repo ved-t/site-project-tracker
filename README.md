@@ -14,3 +14,17 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+#TODO
+Email verification system
+
+Build Profile page
+Build Settings page
+Add confirmation dialog before logout
+
+
+Onboarding screens
+
+
+Upgrade to custom animated sidebar (more modern than default drawer)

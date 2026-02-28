@@ -23,6 +23,15 @@ class VendorHiveModel extends HiveObject {
   @HiveField(5)
   final DateTime createdAt;
 
+  @HiveField(6)
+  final DateTime? updatedAt;
+
+  @HiveField(7)
+  final DateTime? deletedAt;
+
+  @HiveField(8)
+  final String deviceId;
+
   VendorHiveModel({
     required this.id,
     required this.siteId,
@@ -30,6 +39,9 @@ class VendorHiveModel extends HiveObject {
     this.phone,
     this.notes,
     required this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    required this.deviceId,
   });
 
   factory VendorHiveModel.fromEntity(Vendor vendor) => VendorHiveModel(
@@ -39,6 +51,9 @@ class VendorHiveModel extends HiveObject {
     phone: vendor.phone,
     notes: vendor.notes,
     createdAt: vendor.createdAt,
+    updatedAt: vendor.updatedAt,
+    deletedAt: vendor.deletedAt,
+    deviceId: vendor.deviceId,
   );
 
   Vendor toEntity() => Vendor(
@@ -48,5 +63,8 @@ class VendorHiveModel extends HiveObject {
     phone: phone,
     notes: notes,
     createdAt: createdAt,
+    updatedAt: updatedAt ?? createdAt,
+    deletedAt: deletedAt,
+    deviceId: deviceId,
   );
 }

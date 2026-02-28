@@ -1,4 +1,6 @@
+// ignore_for_file: invalid_annotation_target
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../domain/entities/project.dart';
 
 part 'project_model.freezed.dart';
@@ -13,22 +15,31 @@ class ProjectModel with _$ProjectModel {
     required String name,
     required String location,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    DateTime? deletedAt,
+    @JsonKey(name: 'device_id') required String deviceId,
   }) = _ProjectModel;
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) =>
       _$ProjectModelFromJson(json);
 
   factory ProjectModel.fromEntity(Project project) => ProjectModel(
-        id: project.id,
-        name: project.name,
-        location: project.location,
-        createdAt: project.createdAt,
-      );
+    id: project.id,
+    name: project.name,
+    location: project.location,
+    createdAt: project.createdAt,
+    updatedAt: project.updatedAt,
+    deletedAt: project.deletedAt,
+    deviceId: project.deviceId,
+  );
 
   Project toEntity() => Project(
-        id: id,
-        name: name,
-        location: location,
-        createdAt: createdAt,
-      );
+    id: id,
+    name: name,
+    location: location,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    deletedAt: deletedAt,
+    deviceId: deviceId,
+  );
 }
