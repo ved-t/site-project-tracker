@@ -45,14 +45,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final primaryColor = theme.primaryColor;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: _completeOnboarding,
-                child: const Text('Skip'),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: _completeOnboarding,
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey.shade600,
+                    ),
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -86,42 +104,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 32.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       3,
                       (index) => Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        height: 8,
-                        width: _currentPageIndex == index ? 24 : 8,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 10,
+                        width: _currentPageIndex == index ? 30 : 10,
                         decoration: BoxDecoration(
                           color: _currentPageIndex == index
                               ? primaryColor
                               : primaryColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: _nextPage,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: _nextPage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
+                      child: Text(
+                        _currentPageIndex == 2 ? 'Get Started' : 'Next',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      _currentPageIndex == 2 ? 'Get Started' : 'Next',
                     ),
                   ),
                 ],
@@ -139,38 +163,54 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required String title,
     required String subtitle,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (imagePath != null)
-            Image.asset(imagePath, height: 250, fit: BoxFit.contain)
-          else if (icon != null)
-            Icon(icon, size: 100, color: Theme.of(context).primaryColor),
-          const SizedBox(height: 48),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (imagePath != null)
+          Expanded(
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Image.asset(imagePath, fit: BoxFit.contain),
+            ),
+          )
+        else if (icon != null)
+          Expanded(
+            flex: 5,
+            child: Icon(icon, size: 150, color: Theme.of(context).primaryColor),
+          ),
+        Expanded(
+          flex: 4,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 24),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF64748B),
+                    height: 1.5,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 48),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
