@@ -11,4 +11,8 @@ abstract class AuthRepository {
   Future<void> sendPasswordResetEmail(String email);
   Future<AppUser> linkWithEmail(String email, String password);
   Future<AppUser> linkWithGoogle();
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  );
 }

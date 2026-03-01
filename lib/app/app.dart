@@ -97,7 +97,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         scaffoldMessengerKey: rootScaffoldMessengerKey,
         title: 'Expense Tracker',
         theme: professionalIndigoTheme,
-        routerConfig: createRouter(_authProvider),
+        routerConfig: createRouter(_authProvider, _localStorageService),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -16,15 +16,16 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
+Completed:
+    Build Profile page
+    Add confirmation dialog before logout
+    Onboarding screens
+
 #TODO
-Email verification system
-
-Build Profile page
-Build Settings page
-Add confirmation dialog before logout
 
 
-Onboarding screens
 
-
-Upgrade to custom animated sidebar (more modern than default drawer)
+Low Priority
+    Upgrade to custom animated sidebar (more modern than default drawer)
+    Email verification system
+    Settings page (real settings system)

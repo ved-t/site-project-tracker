@@ -4,13 +4,12 @@ import '../../features/projects/data/models/project_hive_model.dart';
 import '../../features/sites/settings/data/models/vendor_hive_model.dart';
 import '../../features/sites/settings/data/models/category_hive_model.dart';
 import '../../features/sites/settings/formulas/data/models/formula_hive_model.dart';
-import '../../features/reports/data/models/report_hive_model.dart';
-import '../constants/hive_constants.dart';
 
 class LocalStorageService {
   static const String _settingsBox = 'settings';
   static const String _keyDeviceId = 'device_id';
   static const String _keyLastSync = 'last_sync_at';
+  static const String _keyHasSeenOnboarding = 'has_seen_onboarding';
 
   Future<String> getDeviceId() async {
     final box = await Hive.openBox(_settingsBox);
@@ -30,6 +29,16 @@ class LocalStorageService {
     return deviceId;
   }
 
+  Future<bool> getHasSeenOnboarding() async {
+    final box = await Hive.openBox(_settingsBox);
+    return box.get(_keyHasSeenOnboarding, defaultValue: false) as bool;
+  }
+
+  Future<void> setHasSeenOnboarding(bool value) async {
+    final box = await Hive.openBox(_settingsBox);
+    await box.put(_keyHasSeenOnboarding, value);
+  }
+
   Future<DateTime?> getLastSyncAt() async {
     final box = await Hive.openBox(_settingsBox);
     final val = box.get(_keyLastSync);
@@ -40,6 +49,16 @@ class LocalStorageService {
   Future<void> setLastSyncAt(DateTime time) async {
     final box = await Hive.openBox(_settingsBox);
     await box.put(_keyLastSync, time.toIso8601String());
+  }
+
+  Future<String?> getProfileImagePath(String userId) async {
+    final box = await Hive.openBox(_settingsBox);
+    return box.get('profile_image_$userId');
+  }
+
+  Future<void> setProfileImagePath(String userId, String path) async {
+    final box = await Hive.openBox(_settingsBox);
+    await box.put('profile_image_$userId', path);
   }
 
   static Future<void> init() async {

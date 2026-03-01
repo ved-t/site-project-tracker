@@ -84,4 +84,23 @@ class FirebaseAuthDataSource {
 
     return await _firebaseAuth.currentUser!.linkWithCredential(credential);
   }
+
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword) async {
+
+    final user = _firebaseAuth.currentUser!;
+    final email = user.email!;
+
+    // Re-authenticate first
+    final credential = EmailAuthProvider.credential(
+      email: email,
+      password: currentPassword,
+    );
+
+    await user.reauthenticateWithCredential(credential);
+
+    // Update password
+    await user.updatePassword(newPassword);
+  }
 }

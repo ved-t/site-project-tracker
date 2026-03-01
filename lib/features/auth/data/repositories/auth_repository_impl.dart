@@ -13,6 +13,9 @@ class AuthRepositoryImpl implements AuthRepository {
       uid: user.uid,
       email: user.email,
       isAnonymous: user.isAnonymous,
+      providers: user.providerData
+          .map((provider) => provider.providerId)
+          .toList(),
     );
   }
 
@@ -69,5 +72,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AppUser> linkWithGoogle() async {
     final result = await dataSource.linkWithGoogle();
     return _mapUser(result.user!);
+  }
+
+  @override
+  Future<void> changePassword(
+      String currentPassword,
+      String newPassword) {
+    return dataSource.changePassword(
+        currentPassword, newPassword);
   }
 }

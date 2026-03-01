@@ -167,4 +167,25 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await repository.changePassword(currentPassword, newPassword);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      _handleAuthError(e);
+      return false;
+    } catch (e) {
+      ToastUtils.show('Password update failed: ${e.toString()}', isError: true);
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
