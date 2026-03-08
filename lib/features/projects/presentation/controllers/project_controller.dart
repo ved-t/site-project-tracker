@@ -7,11 +7,13 @@ import '../../domain/entities/project.dart';
 import '../../domain/usecases/add_project.dart';
 import '../../domain/usecases/get_projects.dart';
 import '../../domain/usecases/delete_project.dart';
+import '../../domain/usecases/update_project.dart';
 
 class ProjectController extends ChangeNotifier {
   final AddProject addProject;
   final GetProjects getProjects;
   final DeleteProject deleteProject;
+  final UpdateProject updateProject;
 
   final SyncManager syncManager;
 
@@ -19,6 +21,7 @@ class ProjectController extends ChangeNotifier {
     required this.addProject,
     required this.getProjects,
     required this.deleteProject,
+    required this.updateProject,
     required this.syncManager,
   });
 
@@ -48,6 +51,22 @@ class ProjectController extends ChangeNotifier {
     } catch (e) {
       AppLogger.error(
         'Failed to create project',
+        error: e,
+        name: 'PROJECT_CTRL',
+      );
+      final msg = DioErrorHandler.getErrorMessage(e);
+      ToastUtils.show(msg, isError: true);
+    }
+  }
+
+  Future<void> editProject(Project project) async {
+    try {
+      await updateProject(project);
+      await loadProjects();
+      await syncManager.sync();
+    } catch (e) {
+      AppLogger.error(
+        'Failed to update project',
         error: e,
         name: 'PROJECT_CTRL',
       );

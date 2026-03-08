@@ -10,17 +10,15 @@ class ProjectRepositoryImpl implements ProjectRepository {
 
   @override
   Future<void> addProject(Project project) async {
-    // Override add to ensure updatedAt is set (though entity should might have it,
-    // but typically repo handles 'creation' timestamp if not provided,
-    // but here entity has it. We ensure model has it.)
-    // Actually, we need to modify the entity to set updatedAt if it's missing or old?
-    // The entity is immutable.
-    // The 'add' op implies new.
-
-    // Check if we need to set updatedAt to now.
-    // Assuming UI passed valid project.
-
     final model = ProjectModel.fromEntity(project);
+    await localDataSource.addProject(model);
+  }
+
+  @override
+  Future<void> updateProject(Project project) async {
+    final model = ProjectModel.fromEntity(
+      project,
+    ).copyWith(updatedAt: DateTime.now());
     await localDataSource.addProject(model);
   }
 

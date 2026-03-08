@@ -2,6 +2,7 @@ import '../entities/project.dart';
 
 abstract class ProjectRepository {
   Future<void> addProject(Project project);
+  Future<void> updateProject(Project project);
   Future<List<Project>> getProjects();
   Future<void> deleteProject(String siteId);
   Future<List<Project>> getLocalChanges(DateTime? since);

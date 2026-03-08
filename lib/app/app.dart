@@ -17,6 +17,7 @@ import '../features/projects/data/repositories/project_repository_impl.dart';
 import '../features/projects/domain/usecases/add_project.dart';
 import '../features/projects/domain/usecases/delete_project.dart';
 import '../features/projects/domain/usecases/get_projects.dart';
+import '../features/projects/domain/usecases/update_project.dart';
 import '../features/projects/presentation/controllers/project_controller.dart';
 import '../theme/indigo_theme.dart';
 import '../core/utils/toast_utils.dart';
@@ -79,6 +80,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       projectRepository: _projectRepository,
       expenseRepository: _expenseRepository,
     );
+    final updateProject = UpdateProject(_projectRepository);
 
     return MultiProvider(
       providers: [
@@ -89,6 +91,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             addProject: addProject,
             getProjects: getProjects,
             deleteProject: deleteProject,
+            updateProject: updateProject,
             syncManager: syncManager,
           ),
         ),
