@@ -64,7 +64,9 @@ class _AppDrawerState extends State<AppDrawer> {
                 child: _isLoading || _imagePath != null
                     ? null
                     : Text(
-                        user?.email?.substring(0, 1).toUpperCase() ?? "G",
+                        user?.email?.isNotEmpty == true
+                            ? user!.email!.substring(0, 1).toUpperCase()
+                            : "G",
                         style: const TextStyle(fontSize: 24),
                       ),
               ),

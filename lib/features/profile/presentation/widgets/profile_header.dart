@@ -68,7 +68,9 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 child: _isLoading || _imagePath != null
                     ? null
                     : Text(
-                        widget.user.email?.substring(0, 1).toUpperCase() ?? "G",
+                        widget.user.email?.isNotEmpty == true
+                            ? widget.user.email!.substring(0, 1).toUpperCase()
+                            : "G",
                         style: const TextStyle(
                           fontSize: 36,
                           color: Colors.white,
