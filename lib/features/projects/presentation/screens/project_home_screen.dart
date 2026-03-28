@@ -5,7 +5,7 @@ import 'package:site_project_tracker/core/services/local_storage_service.dart';
 import 'package:site_project_tracker/features/projects/domain/entities/project.dart';
 import 'package:site_project_tracker/core/widgets/go_pro_button.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/utils/dialog_utils.dart';
+import '../../../../core/widgets/app_modal.dart';
 import '../../../../core/widgets/bouncing_button.dart';
 import '../../../../core/widgets/success_checkmark.dart';
 
@@ -72,13 +72,10 @@ class _ProjectHomeScreenState extends State<ProjectHomeScreen> {
   }
 
   void _openCreateProjectSheet(BuildContext context) {
-    showAnimatedDialog(
+    AppModal.show(
       context,
-      Dialog(
-        insetPadding: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: SingleChildScrollView(child: const _CreateProjectSheet()),
-      ),
+      borderRadius: 20,
+      child: const _CreateProjectSheet(),
     );
   }
 }

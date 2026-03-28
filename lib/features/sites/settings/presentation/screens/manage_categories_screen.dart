@@ -7,7 +7,7 @@ import 'package:site_project_tracker/core/widgets/delete_confirmation_dialog.dar
 import 'package:site_project_tracker/features/sites/settings/presentation/widgets/site_header.dart';
 import '../controllers/category_controller.dart';
 import 'sheets/add_edit_category_sheet.dart';
-import '../../../../../../core/utils/dialog_utils.dart';
+import '../../../../../../core/widgets/app_modal.dart';
 import '../../../../../../core/widgets/bouncing_button.dart';
 import '../../../../../../core/widgets/interactive_card.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -55,19 +55,11 @@ class ManageCategoriesScreen extends ConsumerWidget {
                           padding: const EdgeInsets.only(bottom: 8),
                           child: InteractiveCard(
                             onTap: () {
-                              showAnimatedDialog(
+                              AppModal.show(
                                 context,
-                                Dialog(
-                                  insetPadding: const EdgeInsets.all(16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: SingleChildScrollView(
-                                    child: AddEditCategorySheet(
-                                      siteId: siteId,
-                                      category: cat,
-                                    ),
-                                  ),
+                                child: AddEditCategorySheet(
+                                  siteId: siteId,
+                                  category: cat,
                                 ),
                               );
                             },
@@ -113,17 +105,9 @@ class ManageCategoriesScreen extends ConsumerWidget {
       floatingActionButton: BouncingButton(
         child: FloatingActionButton.extended(
           onPressed: () {
-            showAnimatedDialog(
+            AppModal.show(
               context,
-              Dialog(
-                insetPadding: const EdgeInsets.all(16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: SingleChildScrollView(
-                  child: AddEditCategorySheet(siteId: siteId),
-                ),
-              ),
+              child: AddEditCategorySheet(siteId: siteId),
             );
           },
           icon: const Icon(LucideIcons.plus),

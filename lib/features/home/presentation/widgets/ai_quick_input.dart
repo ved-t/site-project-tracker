@@ -13,6 +13,7 @@ import 'package:speech_to_text/speech_to_text.dart';
 import '../../../../core/widgets/animated_gradient_container.dart';
 import '../../../../core/widgets/bouncing_button.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../core/widgets/app_modal.dart';
 import '../../../expenses/presentation/widgets/add_expense_sheet.dart';
 import 'package:site_project_tracker/features/sites/settings/presentation/controllers/category_controller.dart';
 import 'package:site_project_tracker/features/sites/settings/domain/entities/category.dart';
@@ -303,17 +304,9 @@ class _AIQuickInputState extends ConsumerState<AIQuickInput> {
       }
     } else {
       // Incomplete -> Open Add Expense Sheet with resolved siteId
-      final result = await showModalBottomSheet<bool>(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (context) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: AddExpenseSheet(siteId: siteId, initialDraft: draft),
-        ),
+      final result = await AppModal.show<bool>(
+        context,
+        child: AddExpenseSheet(siteId: siteId, initialDraft: draft),
       );
 
       if (result == true) {

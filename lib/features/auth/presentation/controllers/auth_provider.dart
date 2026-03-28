@@ -15,7 +15,7 @@ class AuthProvider extends ChangeNotifier {
       _user = user;
       notifyListeners();
     });
-  }
+  }   
 
   AppUser? get user => _user;
   bool get isLoading => _isLoading;

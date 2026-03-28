@@ -21,11 +21,16 @@ Completed:
     Add confirmation dialog before logout
     Onboarding screens
 
-#TODO
+## TODO
+    Reports feature:
+        1. Monthly/Weekly/Daily Cash Outflow: Line Graph. Time series Analysis  
+            Amount vs Time. Payment Complete? [Show Stacked Bar Graph (Optional)]
+        2. Spend by Category: Pie Chart. Amount vs Category. Payment Complete?      [Show Stacked Pie Chart (Optional)]
+        3. Vendor Leaderbosrd: Horizontal Bar Chart. Amount vs Vendor. Payment Complete? [Show Stacked Horizontal Bar Chart (Optional)]
+        4. Paid vs Unpaid: Pie Chart/Stacked Bar Chart. Amount vs Payment Status.
 
 
-
-Low Priority
-    Upgrade to custom animated sidebar (more modern than default drawer)
-    Email verification system
-    Settings page (real settings system)
+    Low Priority
+        Upgrade to custom animated sidebar (more modern than default drawer)
+        Email verification system
+        Settings page (real settings system)
