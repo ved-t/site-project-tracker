@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'tabs/site_expenses_tab.dart';
 import 'tabs/expense_recording_tab.dart';
 // import 'tabs/site_phases_tab.dart';
 import 'tabs/site_settings_tab.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider_pkg;
 import '../projects/presentation/controllers/project_controller.dart';
 import '../projects/domain/entities/project.dart';
 import '../../core/widgets/go_pro_button.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'presentation/controllers/site_shell_controller.dart';
 
-class SiteShellScreen extends StatefulWidget {
+class SiteShellScreen extends ConsumerStatefulWidget {
   final String siteId;
 
   const SiteShellScreen({super.key, required this.siteId});
 
   @override
-  State<SiteShellScreen> createState() => _SiteShellScreenState();
+  ConsumerState<SiteShellScreen> createState() => _SiteShellScreenState();
 }
 
-class _SiteShellScreenState extends State<SiteShellScreen> {
-  int _currentIndex = 0;
-
+class _SiteShellScreenState extends ConsumerState<SiteShellScreen> {
   late final List<Widget> _tabs = [
     ExpenseRecordingTab(siteId: widget.siteId),
     SiteExpensesTab(siteId: widget.siteId),
@@ -29,13 +29,23 @@ class _SiteShellScreenState extends State<SiteShellScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final projectController = Provider.of<ProjectController>(context);
+  void dispose() {
+    // Reset tab index and editing state when leaving the site shell
+    // Use Future.microtask to avoid modifying providers during dispose
+    Future.microtask(() {
+      // ignore: unused_result
+      try {
+        ref.read(siteShellTabIndexProvider.notifier).state = 0;
+        ref.read(editingExpenseProvider.notifier).state = null;
+      } catch (_) {}
+    });
+    super.dispose();
+  }
 
-    // Use try-catch or collection search to safely get the project
-    // Assuming Dart 3, .firstOrNull is available on Iterable.
-    // If not, we can use .cast<Project?>().firstWhere(..., orElse: () => null) or try/catch.
-    // Let's use a safe approach compatible with recent Dart versions.
+  @override
+  Widget build(BuildContext context) {
+    final currentIndex = ref.watch(siteShellTabIndexProvider);
+    final projectController = provider_pkg.Provider.of<ProjectController>(context);
 
     Project? project;
     try {
@@ -46,7 +56,6 @@ class _SiteShellScreenState extends State<SiteShellScreen> {
       project = null;
     }
 
-    // If project is not found yet, show loading (or handle error if it persists, but for "split second" loading is appropriate)
     if (project == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -62,15 +71,19 @@ class _SiteShellScreenState extends State<SiteShellScreen> {
           ),
         ],
       ),
-      body: IndexedStack(index: _currentIndex, children: _tabs),
+      body: IndexedStack(index: currentIndex, children: _tabs),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
+        selectedIndex: currentIndex,
         onDestinationSelected: (index) {
-          setState(() => _currentIndex = index);
+          // If user taps Expense tab while already on it, clear any editing state
+          if (index == 0 && currentIndex == 0) {
+            ref.read(editingExpenseProvider.notifier).state = null;
+          }
+          ref.read(siteShellTabIndexProvider.notifier).state = index;
         },
         destinations: const [
           NavigationDestination(
-            icon: Icon(LucideIcons.badgePlus), // or LucideIcons.plusCircle
+            icon: Icon(LucideIcons.badgePlus),
             label: 'Expense',
           ),
           NavigationDestination(icon: Icon(LucideIcons.receipt), label: 'Site'),

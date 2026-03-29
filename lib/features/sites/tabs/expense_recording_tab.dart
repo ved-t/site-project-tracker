@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:site_project_tracker/core/services/sync_providers.dart';
 import '../../expenses/domain/entities/expense.dart';
+import '../presentation/controllers/site_shell_controller.dart';
 
 import '../../expenses/presentation/controllers/expense_controller.dart';
 import '../../expenses/presentation/widgets/calculator_sheet.dart';
@@ -15,6 +16,7 @@ import '../settings/domain/entities/category.dart';
 import '../../../../core/utils/dialog_utils.dart';
 import '../../../../core/widgets/success_checkmark.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/utils/toast_utils.dart';
 
 class ExpenseRecordingTab extends ConsumerStatefulWidget {
   final String siteId;
@@ -39,6 +41,9 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
   bool _isSuccess = false;
   bool _isAmountLocked = false;
   bool _isPaymentCompleted = false;
+
+  // Tracks the ID of the expense being edited (null = add mode)
+  String? _editingExpenseId;
 
   // Helper to show category selection sheet for "More"
   void _showMoreCategoriesSheet(List<ExpenseCategoryEntity> allCategories) {
@@ -69,11 +74,11 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
                     builder: (context, constraints) {
                       // Calculate width based on available dialog width
                       // available - (spacing * 2) / 3
-                      final tileWidth = (constraints.maxWidth - 24) / 3;
+                      final tileWidth = (constraints.maxWidth - 16.1) / 3;
 
                       return Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
+                        spacing: 8,
+                        runSpacing: 8,
                         children: allCategories.sublist(5).map((cat) {
                           final isSelected = _selectedCategory == cat.id;
                           return _buildCategoryTile(
@@ -107,14 +112,14 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
     final theme = Theme.of(context);
     // Screen width - (horizontal padding * 2) - (spacing * 2) / 3
     final tileWidth =
-        customWidth ?? (MediaQuery.of(context).size.width - 32 - 24) / 3;
+        customWidth ?? (MediaQuery.of(context).size.width - 32 - 16.1) / 3;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         width: tileWidth,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         decoration: BoxDecoration(
           color: isSelected
               ? theme.primaryColor.withOpacity(0.1)
@@ -134,16 +139,16 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
               // Use category color, or fallback to theme primary if selected/grey if not?
               // User asked for "the color", implying the category's defined color.
               color: category.color,
-              size: 24,
+              size: 20,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               category.name,
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 color: isSelected ? theme.primaryColor : Colors.black87,
               ),
@@ -160,14 +165,14 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
   }) {
     final theme = Theme.of(context);
     // Same width calculation
-    final tileWidth = (MediaQuery.of(context).size.width - 32 - 24) / 3;
+    final tileWidth = (MediaQuery.of(context).size.width - 32 - 16.1) / 3;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         width: tileWidth,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         decoration: BoxDecoration(
           color: isSelected
               ? theme.primaryColor.withOpacity(0.1)
@@ -186,14 +191,14 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
             Icon(
               LucideIcons.moreHorizontal,
               color: isSelected ? theme.primaryColor : Colors.grey.shade700,
-              size: 24,
+              size: 20,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               isSelected ? 'Other' : 'More',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 color: isSelected ? theme.primaryColor : Colors.black87,
               ),
@@ -225,8 +230,35 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
       _isAmountLocked = false;
       _isSuccess = false;
       _isPaymentCompleted = false;
+      _editingExpenseId = null;
     });
+    // Clear the editing provider so the shell knows we're done
+    ref.read(editingExpenseProvider.notifier).state = null;
     // Scroll to top
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  /// Populates form fields from an [Expense] entity for editing.
+  void _populateFromExpense(Expense expense) {
+    _amountController.text = expense.amount.toStringAsFixed(2);
+    _titleController.text = expense.title;
+    _vendorController.text = expense.vendor;
+    _remarksController.text = expense.remarks ?? '';
+    setState(() {
+      _selectedDate = expense.date;
+      _selectedCategory = expense.categoryId;
+      _isPaymentCompleted = expense.isPaymentCompleted;
+      _isAmountLocked = false;
+      _isSuccess = false;
+      _editingExpenseId = expense.id;
+    });
+    // Scroll to top so user sees the filled form
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         0,
@@ -239,18 +271,18 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedCategory == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a category')));
+      ToastUtils.show('Please select a category', isError: true);
       return;
     }
 
     setState(() => _isSubmitting = true);
 
     final deviceId = await ref.read(localStorageServiceProvider).getDeviceId();
+    final isEditing = _editingExpenseId != null;
+    final editingExpense = ref.read(editingExpenseProvider);
 
     final expense = Expense(
-      id: const Uuid().v4(),
+      id: isEditing ? _editingExpenseId! : const Uuid().v4(),
       siteId: widget.siteId,
       title: _titleController.text.trim(),
       amount: double.parse(_amountController.text),
@@ -261,13 +293,17 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
       remarks: _remarksController.text.trim().isEmpty
           ? null
           : _remarksController.text.trim(),
-      createdAt: DateTime.now(),
+      createdAt: isEditing ? editingExpense!.createdAt : DateTime.now(),
       updatedAt: DateTime.now(),
       deviceId: deviceId,
     );
 
     try {
-      await ref.read(expenseControllerProvider.notifier).addExpense(expense);
+      if (isEditing) {
+        await ref.read(expenseControllerProvider.notifier).updateExpense(expense);
+      } else {
+        await ref.read(expenseControllerProvider.notifier).addExpense(expense);
+      }
       // Invalidate provider to refresh list in other tabs
       ref.invalidate(projectExpensesProvider(widget.siteId));
 
@@ -278,12 +314,9 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
         });
 
         // Show success feedback
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Expense added successfully'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
+        ToastUtils.show(
+          isEditing ? 'Expense updated successfully' : 'Expense added successfully',
+          duration: const Duration(seconds: 2),
         );
       }
 
@@ -294,9 +327,7 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error adding expense: $e')));
+        ToastUtils.show('Error ${isEditing ? 'updating' : 'adding'} expense: $e', isError: true);
       }
     }
   }
@@ -359,6 +390,18 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen for changes to the editing expense (triggered from ExpenseRow tap)
+    ref.listen<Expense?>(editingExpenseProvider, (previous, next) {
+      if (next != null && next.id != _editingExpenseId) {
+        _populateFromExpense(next);
+      } else if (next == null && _editingExpenseId != null) {
+        // Editing was cancelled externally (e.g. user tapped Expense tab again)
+        _resetForm();
+      }
+    });
+
+    final isEditing = _editingExpenseId != null;
+
     // Watch Categories & Vendors
     final categories = ref.watch(categoriesProvider(widget.siteId));
     final vendors = ref.watch(vendorsProvider(widget.siteId));
@@ -372,7 +415,7 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
                   const SuccessCheckmark(size: 80, color: Colors.green),
                   const SizedBox(height: 16),
                   Text(
-                    'Expense Added!',
+                    isEditing ? 'Expense Updated!' : 'Expense Added!',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ],
@@ -501,8 +544,8 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
                         }
 
                         return Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
+                          spacing: 8,
+                          runSpacing: 8,
                           children: [
                             ...displayCategories.map((cat) {
                               return _buildCategoryTile(
@@ -628,9 +671,9 @@ class _ExpenseRecordingTabState extends ConsumerState<ExpenseRecordingTab> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text(
-                                'Save Expense',
-                                style: TextStyle(fontSize: 16),
+                            : Text(
+                                isEditing ? 'Save edited Expense' : 'Save Expense',
+                                style: const TextStyle(fontSize: 16),
                               ),
                       ),
                     ),

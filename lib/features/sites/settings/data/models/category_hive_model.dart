@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:site_project_tracker/features/sites/settings/domain/entities/category.dart';
+import 'package:site_project_tracker/core/utils/icon_utils.dart';
 
 part 'category_hive_model.g.dart';
 
@@ -62,7 +63,7 @@ class CategoryHiveModel extends HiveObject {
     id: id,
     siteId: siteId,
     name: name,
-    icon: IconData(iconCodePoint, fontFamily: 'MaterialIcons'),
+    icon: IconUtils.getIconFromCodePoint(iconCodePoint),
     color: Color(color),
     createdAt: createdAt,
     updatedAt: updatedAt ?? createdAt,

@@ -56,6 +56,8 @@ class _AddEditCategorySheetState extends ConsumerState<AddEditCategorySheet> {
 
     await ref.read(categoriesProvider(widget.siteId).notifier).save(category);
 
+    if (!mounted) return;
+
     setState(() {
       _isSaving = false;
       _isSuccess = true;

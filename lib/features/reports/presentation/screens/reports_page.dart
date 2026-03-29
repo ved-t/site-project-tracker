@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:site_project_tracker/features/expenses/presentation/controllers/expense_controller.dart';
 import 'package:site_project_tracker/core/widgets/app_modal.dart';
+import 'package:site_project_tracker/features/sites/settings/presentation/controllers/category_controller.dart';
 import '../../domain/entities/report_section.dart';
 import '../widgets/create_report_modal.dart';
 import '../widgets/report_section_widget.dart';
@@ -44,6 +45,7 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
         error: (e, _) => Center(child: Text('Error loading expenses: $e')),
         data: (expenses) {
           final sections = ref.watch(reportSectionsProvider(widget.siteId));
+          final categories = ref.watch(categoriesProvider(widget.siteId));
 
           if (sections.isEmpty) {
             return Center(
@@ -76,12 +78,13 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
 
           return ListView.builder(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             itemCount: sections.length,
             itemBuilder: (_, index) {
               return ReportSectionWidget(
                 config: sections[index],
                 expenses: expenses,
+                categories: categories,
                 onDelete: () => ref.read(reportSectionsProvider(widget.siteId).notifier).removeSection(sections[index].id),
               );
             },

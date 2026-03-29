@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../domain/entities/category.dart';
+import '../../../../../core/utils/icon_utils.dart';
 
 part 'category_model.freezed.dart';
 part 'category_model.g.dart';
@@ -41,7 +42,7 @@ class CategoryModel with _$CategoryModel {
     id: id,
     siteId: siteId,
     name: name,
-    icon: IconData(iconCodePoint, fontFamily: 'MaterialIcons'),
+    icon: IconUtils.getIconFromCodePoint(iconCodePoint),
     color: Color(colorValue),
     createdAt: createdAt,
     updatedAt: updatedAt,

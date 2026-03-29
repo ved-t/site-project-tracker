@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:site_project_tracker/core/widgets/interactive_card.dart';
+import '../screens/formulas_list_screen.dart';
 import '../controllers/formulas_controller.dart';
 import '../../domain/entities/formula.dart';
 
@@ -41,12 +42,12 @@ class FormulaPickerSheet extends ConsumerWidget {
                 const SizedBox(height: 8),
                 TextButton(
                   onPressed: () {
-                    // Instructions or navigation could go here
-                    // For now just close or show info
                     Navigator.pop(context);
-                    // Ideally navigate to manage formulas:
-                    // context.push('/sites/$siteId/settings/formulas');
-                    // but context.push might not be readily available or we are in a sheet.
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => FormulasListScreen(siteId: siteId),
+                      ),
+                    );
                   },
                   child: const Text('Go to Settings to add formulas'),
                 ),

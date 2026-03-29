@@ -62,9 +62,14 @@ class _MyAppState extends ConsumerState<MyApp> {
     _expenseRepository = ExpenseRepositoryImpl(expenseLocalDataSource);
 
     // Schedule sync after the first frame to ensure providers are ready
+    // We add a small extra delay to ensure the initial route has built its Scaffold
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppLogger.sync('App Started - Triggering initial sync');
-      ref.read(syncManagerProvider).sync();
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          AppLogger.sync('App Started - Triggering initial sync');
+          ref.read(syncManagerProvider).sync();
+        }
+      });
     });
   }
 

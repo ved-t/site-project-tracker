@@ -8,7 +8,7 @@
             "name": "site-project-tracker",
             "request": "launch",
             "type": "dart",
-            "deviceId": "192.168.1.10:41319"
+            "deviceId": "192.168.1.8:41711"
         },
         {
             "name": "site-project-tracker (profile mode)",

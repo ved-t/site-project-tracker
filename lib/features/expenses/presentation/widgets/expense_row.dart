@@ -5,6 +5,7 @@ import '../../domain/entities/expense.dart';
 import '../../../sites/settings/presentation/controllers/category_controller.dart';
 import '../../../sites/settings/domain/entities/category.dart';
 import '../../../../core/widgets/interactive_card.dart';
+import '../../../sites/presentation/controllers/site_shell_controller.dart';
 
 class ExpenseRow extends ConsumerWidget {
   final Expense expense;
@@ -38,7 +39,11 @@ class ExpenseRow extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: InteractiveCard(
-        onTap: () {},
+        onTap: () {
+          // Set the expense to edit and switch to the Expense recording tab
+          ref.read(editingExpenseProvider.notifier).state = expense;
+          ref.read(siteShellTabIndexProvider.notifier).state = 0;
+        },
         borderRadius: BorderRadius.circular(12),
         color: Theme.of(context).colorScheme.surface,
         child: Padding(

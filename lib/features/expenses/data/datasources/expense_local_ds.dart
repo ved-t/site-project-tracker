@@ -64,6 +64,7 @@ class ExpenseLocalDataSource {
       vendor: model.vendor,
       remarks: model.remarks,
       deviceId: model.deviceId,
+      isPaymentCompleted: model.isPaymentCompleted,
     );
 
     await box.put(model.id, hiveModel);
@@ -84,6 +85,7 @@ class ExpenseLocalDataSource {
       updatedAt: model.updatedAt,
       deletedAt: model.deletedAt,
       deviceId: model.deviceId,
+      isPaymentCompleted: model.isPaymentCompleted,
     );
 
     await box.put(model.id, hiveModel);
@@ -123,6 +125,7 @@ class ExpenseLocalDataSource {
         updatedAt: change.updatedAt,
         deletedAt: change.deletedAt,
         deviceId: change.deviceId,
+        isPaymentCompleted: change.isPaymentCompleted,
       );
 
       await box.put(change.id, hiveModel);
@@ -143,6 +146,7 @@ class ExpenseLocalDataSource {
       updatedAt: e.updatedAt ?? e.createdAt,
       deletedAt: e.deletedAt,
       deviceId: e.deviceId,
+      isPaymentCompleted: e.isPaymentCompleted,
     );
   }
 
@@ -202,6 +206,7 @@ class ExpenseLocalDataSource {
           updatedAt: DateTime.now(),
           deletedAt: DateTime.now(),
           deviceId: existing.deviceId,
+          isPaymentCompleted: existing.isPaymentCompleted,
         );
 
         await box.put(id, updated);

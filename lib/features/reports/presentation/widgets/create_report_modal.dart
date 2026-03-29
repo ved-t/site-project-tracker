@@ -155,6 +155,7 @@ class _CreateReportModalState extends State<CreateReportModal> {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<ChartType>(
+            isExpanded: true,
             value: chartType,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -165,7 +166,10 @@ class _CreateReportModalState extends State<CreateReportModal> {
             items: ChartType.values.map((e) {
               return DropdownMenuItem(
                 value: e,
-                child: Text(_chartTypeLabel(e)),
+                child: Text(
+                  _chartTypeLabel(e),
+                  overflow: TextOverflow.ellipsis,
+                ),
               );
             }).toList(),
             onChanged: _onChartTypeChanged,
@@ -182,6 +186,7 @@ class _CreateReportModalState extends State<CreateReportModal> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<ReportMetric>(
+              isExpanded: true,
               value: metric,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -192,7 +197,10 @@ class _CreateReportModalState extends State<CreateReportModal> {
               items: _allowedMetrics.map((e) {
                 return DropdownMenuItem(
                   value: e,
-                  child: Text(_metricLabel(e)),
+                  child: Text(
+                    _metricLabel(e),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
               onChanged: (v) => setState(() => metric = v),
@@ -210,6 +218,7 @@ class _CreateReportModalState extends State<CreateReportModal> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<Granularity>(
+              isExpanded: true,
               value: granularity,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -220,7 +229,10 @@ class _CreateReportModalState extends State<CreateReportModal> {
               items: Granularity.values.map((e) {
                 return DropdownMenuItem(
                   value: e,
-                  child: Text(_granularityLabel(e)),
+                  child: Text(
+                    _granularityLabel(e),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
               onChanged: (v) => setState(() => granularity = v),

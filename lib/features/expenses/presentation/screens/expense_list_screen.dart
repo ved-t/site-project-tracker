@@ -11,14 +11,21 @@ import '../../domain/entities/expense.dart';
 import 'package:site_project_tracker/features/sites/settings/presentation/widgets/site_header.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-class ExpenseListScreen extends ConsumerWidget {
+class ExpenseListScreen extends ConsumerStatefulWidget {
   final String siteId;
   const ExpenseListScreen({super.key, required this.siteId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ExpenseListScreen> createState() => _ExpenseListScreenState();
+}
+
+class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
+  final Set<String> _collapsedDates = {};
+
+  @override
+  Widget build(BuildContext context) {
     // Watch the FILTERED expenses
-    final expensesAsync = ref.watch(filteredProjectExpensesProvider(siteId));
+    final expensesAsync = ref.watch(filteredProjectExpensesProvider(widget.siteId));
     final filter = ref.watch(expenseFilterProvider);
 
     AppLogger.debug(
@@ -65,7 +72,7 @@ class ExpenseListScreen extends ConsumerWidget {
                                       borderRadius: BorderRadius.circular(24),
                                     ),
                                     child: SingleChildScrollView(
-                                      child: FilterBottomSheet(siteId: siteId),
+                                      child: FilterBottomSheet(siteId: widget.siteId),
                                     ),
                                   ),
                                 );
@@ -164,37 +171,61 @@ class ExpenseListScreen extends ConsumerWidget {
                     final isToday =
                         dateKey ==
                         DateFormat('yyyy-MM-dd').format(DateTime.now());
+                    final isCollapsed = _collapsedDates.contains(dateKey);
 
                     return [
                       SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 16,
-                            bottom: 8,
-                            left: 4,
-                          ),
-                          child: Text(
-                            isToday
-                                ? 'TODAY'
-                                : DateFormat(
-                                    'dd MMM yyyy',
-                                  ).format(date).toUpperCase(),
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.1,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (isCollapsed) {
+                                _collapsedDates.remove(dateKey);
+                              } else {
+                                _collapsedDates.add(dateKey);
+                              }
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 4,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  isToday
+                                      ? 'TODAY'
+                                      : DateFormat(
+                                          'dd MMM yyyy',
+                                        ).format(date).toUpperCase(),
+                                  style: Theme.of(context).textTheme.labelSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.1,
+                                        color: Colors.grey[500],
+                                      ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  isCollapsed
+                                      ? LucideIcons.chevronDown
+                                      : LucideIcons.chevronUp,
+                                  size: 16,
                                   color: Colors.grey[500],
                                 ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) =>
-                              ExpenseRow(expense: dateExpenses[index]),
-                          childCount: dateExpenses.length,
+                      if (!isCollapsed)
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) =>
+                                ExpenseRow(expense: dateExpenses[index]),
+                            childCount: dateExpenses.length,
+                          ),
                         ),
-                      ),
                     ];
                   }),
               ],
